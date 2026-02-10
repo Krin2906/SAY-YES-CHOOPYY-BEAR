@@ -15,18 +15,18 @@ const screens = [
   { text: "RUN" },
   { text: "IT" },
   { text: "BACKK!!!" },
-  { text: "Will you be my Valentine?", isQuestion: true },
+  // add purple heart + heart with arrow when question shows
+  { text: "Will you be my Valentine? 💜💘", isQuestion: true },
 ];
 
 let idx = 0;
 
-// Helps with autoplay restrictions: we "unlock" audio on first click.
+// Helps with autoplay restrictions: unlock audio on first click
 let audioUnlocked = false;
 function unlockAudioOnce() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
-  // Try to play/pause quickly to satisfy some browsers (no sound heard)
   [yesHoverAudio, noHoverAudio].forEach(a => {
     a.muted = true;
     a.play().then(() => {
@@ -34,7 +34,6 @@ function unlockAudioOnce() {
       a.currentTime = 0;
       a.muted = false;
     }).catch(() => {
-      // If it fails, hover may still work after interaction on some browsers
       a.muted = false;
     });
   });
@@ -44,10 +43,13 @@ function render() {
   const s = screens[idx];
   stage.textContent = s.text;
 
+  // cute styling for question
+  stage.classList.toggle("question", !!s.isQuestion);
+
   if (s.isQuestion) {
     nextBtn.classList.add("hidden");
     choiceRow.classList.remove("hidden");
-    subtext.textContent = "Choose wisely 😌";
+    subtext.textContent = "Choose wisely, choopy 😌💗";
   } else {
     nextBtn.classList.remove("hidden");
     choiceRow.classList.add("hidden");
@@ -63,35 +65,78 @@ nextBtn.addEventListener("click", () => {
 
 // Hover audio
 function playHover(audioEl) {
-  if (!audioUnlocked) return; // prevents annoyance before the first click
+  if (!audioUnlocked) return;
   try {
     audioEl.currentTime = 0;
     audioEl.play();
   } catch {}
 }
-
 yesBtn.addEventListener("mouseenter", () => playHover(yesHoverAudio));
 noBtn.addEventListener("mouseenter", () => playHover(noHoverAudio));
 
-// YES click
+// --- PARTY MODE (confetti + lights) ---
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function launchConfetti(amount = 120) {
+  const colors = ["#ff5fd2", "#ff9ae7", "#b45fff", "#ffffff"];
+
+  for (let i = 0; i < amount; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti";
+
+    const left = rand(0, 100);
+    const duration = rand(1.6, 3.4);
+    const delay = rand(0, 0.6);
+    const sizeW = rand(7, 12);
+    const sizeH = rand(10, 18);
+
+    piece.style.left = `${left}vw`;
+    piece.style.width = `${sizeW}px`;
+    piece.style.height = `${sizeH}px`;
+    piece.style.animationDuration = `${duration}s`;
+    piece.style.animationDelay = `${delay}s`;
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    // add a little horizontal drift
+    piece.style.transform = `translateY(-20px) rotate(${rand(0, 360)}deg) translateX(${rand(-20, 20)}px)`;
+
+    document.body.appendChild(piece);
+
+    setTimeout(() => piece.remove(), (duration + delay) * 1000 + 200);
+  }
+}
+
+function setPartyMode(on) {
+  document.body.classList.toggle("party", on);
+}
+
+// YES click -> party!
 yesBtn.addEventListener("click", () => {
   unlockAudioOnce();
-  stage.textContent = "YAYYYYY 💘";
-  subtext.textContent = "Best decision ever. I love you!!";
+
+  setPartyMode(true);
+  launchConfetti(160);
+
+  stage.textContent = "YAYYYYY CHOOPY!!! 💖✨";
+  subtext.textContent = "I love you sooo much 💜💘";
+
   choiceRow.classList.add("hidden");
 });
 
-// NO click (playful, non-violent)
+// NO click (playful)
 noBtn.addEventListener("click", () => {
   unlockAudioOnce();
 
-  document.querySelector(".card").classList.remove("shake");
-  void document.querySelector(".card").offsetWidth; // reflow to restart animation
-  document.querySelector(".card").classList.add("shake");
+  const card = document.querySelector(".card");
+  card.classList.remove("shake");
+  void card.offsetWidth; // reflow
+  card.classList.add("shake");
 
-  subtext.textContent = "Milo & Oscar are DISPLEASED 🐹🐹";
+  // updated message
+  subtext.textContent = "Oscar and Milo GOT 🐹🐹";
 
-  // “poof” emojis as a silly effect (not graphic)
   const puff1 = document.createElement("span");
   puff1.className = "puff";
   puff1.textContent = "💥";
