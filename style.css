@@ -1,0 +1,117 @@
+:root {
+  --bg1: #0b1020;
+  --bg2: #1a0b2e;
+  --card: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.16);
+  --text: #f6f3ff;
+  --muted: rgba(246, 243, 255, 0.75);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(1200px 800px at 20% 10%, #5b2cff55, transparent 60%),
+              radial-gradient(1200px 800px at 80% 90%, #ff2c8b44, transparent 60%),
+              linear-gradient(135deg, var(--bg1), var(--bg2));
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: var(--text);
+  padding: 24px;
+}
+
+.card {
+  width: min(720px, 100%);
+  padding: 28px;
+  border-radius: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  text-align: center;
+}
+
+.stage {
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 8px 0 18px;
+  text-transform: uppercase;
+  text-shadow: 0 8px 30px rgba(0,0,0,0.35);
+}
+
+.controls {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+.choice {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hidden { display: none; }
+
+.btn {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.btn:hover { transform: translateY(-2px) scale(1.02); }
+.btn:active { transform: translateY(0px) scale(0.99); }
+
+.primary {
+  background: linear-gradient(90deg, #ff2c8b, #6b2cff);
+  border: none;
+}
+
+.yes {
+  background: linear-gradient(90deg, #2cffb3, #2c8bff);
+  border: none;
+}
+
+.no {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.subtext {
+  margin-top: 16px;
+  color: var(--muted);
+  min-height: 1.2em;
+}
+
+/* Fun “uh oh” effect */
+.shake {
+  animation: shake 500ms ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-7px); }
+  80% { transform: translateX(7px); }
+}
+
+.puff {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 28px;
+  animation: puff 900ms ease forwards;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35));
+}
+@keyframes puff {
+  0% { transform: scale(0.8); opacity: 0; }
+  30% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1.7) translateY(-18px); opacity: 0; }
+}
